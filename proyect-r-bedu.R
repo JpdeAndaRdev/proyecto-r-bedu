@@ -4,7 +4,6 @@ install.packages("leaflet")
 install.packages( "bslib")
 install.packages("plotly")
 install.packages("rgbif")
-install.packages("scrubr")
 install.packages("sf")
 install.packages("shiny")
 install.packages("mapview")
@@ -30,12 +29,47 @@ na <- occ_search(scientificName = 'Nothofagus antarctica')$data %>%
   mutate(especie = 'Nothofagus antarctica') %>%
   dplyr::filter(lat < 0, lon < 0)
 
-datos <- np %>% 
-  bind_rows(na)
+# Filtrar datos de Araucaria araucana
+ara <- occ_search(scientificName = 'Araucaria araucana')$data %>%
+  dplyr::select(decimalLatitude, decimalLongitude) %>%
+  na.omit() %>%
+  rename(lat = decimalLatitude, lon = decimalLongitude) %>%
+  distinct() %>%
+  mutate(especie = 'Araucaria araucana') %>%
+  filter(lat < 0, lon < 0)
 
-datos_esp <- datos %>%
-  st_as_sf(coords = c(2, 1),
-           crs = 4326)
+# Realizar la búsqueda de ocurrencias de Pinus sylvestris
+datos_ps <- occ_search(scientificName = "Pinus sylvestris")
+
+# Extraer los datos y seleccionar las columnas de interés
+ps <- datos_ps$data %>%
+  dplyr::select(decimalLatitude, decimalLongitude)
+
+# Filtrar y limpiar los datos
+ps <- ps %>%
+  na.omit() %>%
+  rename(lat = decimalLatitude, lon = decimalLongitude) %>%
+  distinct() %>%
+  mutate(especie = "Pinus sylvestris")
+
+# Combinar todos los datos
+datos <- bind_rows(np, na, ara, ps)
+
+  #filter(lat < 0, lon < 0)
+
+#datos <- np %>% 
+ # bind_rows(na, ara, agar)
+# Combinar todos los datos
+datos <- bind_rows(np, na, ara, ps)
+
+
+#datos_esp <- datos %>%
+ # st_as_sf(coords = c(2, 1),
+ #          crs = 4326)
+
+datos_esp <- st_as_sf(datos,
+                      coords = c("lon", "lat"),
+                      crs = 4326)
 
 mapview(datos_esp)
 
@@ -101,7 +135,7 @@ server <- function(input, output, session) {
   output$plot <- renderPlotly({
     
     plot_ly(data = datos, x = ~lon, y = ~lat, color = ~especie, size = 2) %>%
-      layout(title = "Coordenadas Nothofagus",
+      layout(title = "Coordenadas Nothofagus, Pinus Sylvestris y Araucaria araucana",
              yaxis = list(title = "Latitud"),
              xaxis = list(title = "Longitud"))
   })
