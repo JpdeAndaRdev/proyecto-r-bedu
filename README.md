@@ -11,6 +11,26 @@ pacman::p_load(tidyverse,rgbif,scrubr,sf,shiny,leaflet,bslib,plotly,mapview)
 
 Esta línea carga las bibliotecas necesarias para el código. 'pacman' es una biblioteca en R que puede manejar paquetes. La función 'p_load' de 'pacman' instalará y cargará las bibliotecas si aún no están instaladas.
 
+Aquí hay una breve descripción de los paquetes que se están cargando:
+
+
+- `tidyverse`: Colección de paquetes para manipulación y visualización de datos.
+
+- `rgbif`: Proporciona una interfaz a la API de GBIF para acceder a datos de biodiversidad.
+
+- `sf`: Para manipulación de datos espaciales.
+
+- `shiny`: Para construir aplicaciones web interactivas.
+
+- `leaflet`: Para crear mapas interactivos.
+
+- `bslib`: Para estilizar aplicaciones Shiny con Bootstrap.
+
+- `plotly`: Para crear gráficos interactivos.
+
+- `mapview`: Para visualizar datos espaciales.
+
+
 1) Preparación
 
 El bloque de código en esta sección realiza varias tareas:
